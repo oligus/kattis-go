@@ -1,30 +1,43 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
+	"math"
 	"strings"
 )
 
 func main() {
-	var n int
-	var line string
+	var n, m int
 	fmt.Scanln(&n)
+	fmt.Scanln(&m)
 
-	scanner := bufio.NewScanner(os.Stdin)
+	shares := distribute(m, n)
 
-	i := 0
-	for scanner.Scan() {
-		line = scanner.Text()
-		for _, str := range strings.Fields(line) {
-			x, _ := strconv.Atoi(str)
-			if x < 0 {
-				i = i + 1
-			}
-		}
+	symbol := "*"
+	for i := range shares {
+		fmt.Println(strings.Repeat(symbol, shares[i]))
+
 	}
 
-	fmt.Println(i)
+}
+
+func distribute(total int, size int) []int {
+	shares := make([]int, size)
+	floor := math.Floor(float64(total) / float64(size))
+
+	for i := range shares {
+		shares[i] = int(floor)
+	}
+
+	remain := total % size
+
+	if remain == 0 {
+		return shares
+	}
+
+	for i := 0; i < remain; i++ {
+		shares[i]++
+	}
+
+	return shares
 }
